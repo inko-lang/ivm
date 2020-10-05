@@ -1,0 +1,52 @@
+---
+test:windows:
+  extends:
+    - .only-source-repository
+  tags:
+    - windows
+    - inko
+    - vbox
+  stage: test
+  before_script:
+    - cargo --version
+    - rustc --version
+  script:
+    - cargo test
+  cache:
+    key: windows
+    paths:
+      - .cargo
+      - target
+
+test:macos:
+  extends:
+    - .only-source-repository
+  tags:
+    - macos
+    - inko
+    - vbox
+  stage: test
+  before_script:
+    - cargo --version
+    - rustc --version
+  script:
+    - cargo test
+  cache:
+    key: macos
+    paths:
+      - .cargo
+      - target
+
+test:linux:
+  image: registry.gitlab.com/inko-lang/development-docker-images:alpine
+  stage: test
+  before_script:
+    - cargo --version
+    - rustc --version
+  script:
+    - cargo test
+  cache:
+    key: linux
+    paths:
+      - .cargo
+      - target
