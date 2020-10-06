@@ -10,6 +10,14 @@ macOS, and Windows; and doesn't need a Bash shell.
 For more details about ivm, how to use it, and how to install it as a user,
 refer to the [documentation](#TODO).
 
+## Supported platforms
+
+* Linux
+* macOS
+* Windows
+
+Since Inko requires a 64-bits platform, so does ivm.
+
 ## Requirements
 
 * Rust 1.34 or newer
