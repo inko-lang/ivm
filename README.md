@@ -24,12 +24,14 @@ Since Inko requires a 64-bits platform, so does ivm.
 
 ## Installation
 
-First clone the Git repository:
+You can install ivm using `cargo`:
+
+    cargo install ivm --force
+
+Alternatively, you can build from source:
 
     git clone git@gitlab.com:inko-lang/ivm.git
-
-Then build it:
-
+    cd ivm
     cargo build --release
 
 You can now move `target/release/ivm` into your PATH.

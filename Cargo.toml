@@ -4,6 +4,11 @@ version = "0.1.0" # VERSION
 authors = ["Yorick Peterse <yorick@yorickpeterse.com>"]
 edition = "2018"
 license = "MPL-2.0"
+description = "The cross-platform Inko version manager"
+repository = "https://gitlab.com/inko-lang/ivm"
+readme = "README.md"
+keywords = ["inko", "version manager"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 getopts = "^0.2"
