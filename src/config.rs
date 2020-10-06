@@ -2,7 +2,11 @@ use crate::error::Error;
 use dirs_next::{cache_dir, config_dir, data_local_dir};
 use std::path::PathBuf;
 
-pub const INKO_EXE: &str = if cfg!(windows) { "inko.exe" } else { "inko" };
+#[cfg(windows)]
+pub const INKO_EXE: &str = "inko.exe";
+
+#[cfg(not(windows))]
+pub const INKO_EXE: &str = "inko";
 
 const BASE_DIR: &str = "ivm";
 
