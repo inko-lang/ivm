@@ -62,7 +62,7 @@ pub fn run() -> Result<(), Error> {
 
     let matches = options.parse(&args[1..])?;
 
-    if matches.opt_present("h") {
+    if matches.opt_present("h") || matches.free.is_empty() {
         usage!(&options, USAGE);
         return Ok(());
     }
