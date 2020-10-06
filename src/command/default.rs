@@ -57,7 +57,7 @@ pub fn run(arguments: &[String]) -> Result<(), Error> {
 
     info!("Creating symbolic link for {}", INKO_EXE);
 
-    let sym_bin = bin_directory()?.join("inko");
+    let sym_bin = bin_directory()?.join(INKO_EXE);
     let src_bin = version_dir.join("bin").join(INKO_EXE);
 
     if sym_bin.exists() {
