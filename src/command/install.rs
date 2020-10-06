@@ -7,7 +7,7 @@ use dircpy::CopyBuilder;
 use flate2::read::GzDecoder;
 use getopts::Options;
 use std::env;
-use std::fs::{copy, create_dir, create_dir_all};
+use std::fs::{copy, create_dir, create_dir_all, remove_dir_all};
 use std::path::PathBuf;
 use std::process::Command;
 use tar::Archive;
@@ -53,7 +53,16 @@ pub fn run(arguments: &[String]) -> Result<(), Error> {
 
     info!("Installing version {}", version);
 
-    install(source, target)?;
+    install(&source, &target)?;
+
+    info!("Removing source directory");
+
+    remove_dir_all(source).map_err(|error| {
+        Error::generic(format!(
+            "Failed to remove the source directory: {}",
+            error
+        ))
+    })?;
 
     info!("Version {} has been installed", version);
 
@@ -105,7 +114,7 @@ fn extract(version: &Version) -> Result<PathBuf, Error> {
     Ok(extract_to)
 }
 
-fn install(source: PathBuf, target: PathBuf) -> Result<(), Error> {
+fn install(source: &PathBuf, target: &PathBuf) -> Result<(), Error> {
     if target.is_dir() {
         return Err(Error::generic("The version is already installed"));
     }
