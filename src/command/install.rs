@@ -6,7 +6,6 @@ use crate::version::Version;
 use dircpy::CopyBuilder;
 use flate2::read::GzDecoder;
 use getopts::Options;
-use std::env;
 use std::fs::{copy, create_dir, create_dir_all, remove_dir_all};
 use std::path::PathBuf;
 use std::process::Command;
@@ -139,15 +138,10 @@ fn install(source: &PathBuf, target: &PathBuf) -> Result<(), Error> {
         .env("INKO_RUNTIME_LIB", &runtime_dir)
         .current_dir(&source.join("cli"));
 
-    let dynamic_libffi = if cfg!(windows) {
-        // For Windows we only enable dynamic linking of libffi if the
-        // environment is likely to support it, such as MSYS2.
-        env::var_os("MSYSTEM").is_some()
-    } else {
-        true
-    };
-
-    if dynamic_libffi {
+    if !cfg!(windows) {
+        // Dynamic linking of libffi doesn't work on MSVC, and we never got it
+        // to work when using MSYS2 either. As such we only dynamically link to
+        // libffi on Unix systems.
         command.arg("--features").arg("libinko/libffi-system");
     }
 
