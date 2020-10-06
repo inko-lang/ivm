@@ -35,7 +35,16 @@ Examples:
 
     ivm install 0.8.0      # Install version 0.8.0
     ivm uninstall 0.8.0    # Uninstall version 0.8.0
-    ivm run 0.8.0 foo      # Run the command `foo` with version 0.8.0";
+    ivm run 0.8.0 foo      # Run the command `foo` with version 0.8.0
+
+You can use the -p/--print option to display what directory ivm uses for a
+certain setting. The following settings are available:
+
+    data       The data directory
+    bin        The directory for symbolic links to executables
+    cache      The directory for storing temporary data
+    install    The directory containing all installed versions
+    config     The directory containing configuration files";
 
 pub fn run() -> Result<(), Error> {
     let args: Vec<_> = env::args().collect();
@@ -44,6 +53,12 @@ pub fn run() -> Result<(), Error> {
     options.parsing_style(ParsingStyle::StopAtFirstFree);
     options.optflag("h", "help", "Shows this help message");
     options.optflag("v", "version", "Prints the version number");
+    options.optopt(
+        "p",
+        "print",
+        "Prints the path to a directory used by ivm",
+        "KIND",
+    );
 
     let matches = options.parse(&args[1..])?;
 
@@ -55,6 +70,36 @@ pub fn run() -> Result<(), Error> {
     if matches.opt_present("v") {
         println!("ivm version {}", env!("CARGO_PKG_VERSION"));
         return Ok(());
+    }
+
+    match matches.opt_str("p").as_ref().map(|s| s.as_str()) {
+        Some("data") => {
+            println!("{}", data_directory()?.to_string_lossy());
+            return Ok(());
+        }
+        Some("bin") => {
+            println!("{}", bin_directory()?.to_string_lossy());
+            return Ok(());
+        }
+        Some("cache") => {
+            println!("{}", cache_directory()?.to_string_lossy());
+            return Ok(());
+        }
+        Some("install") => {
+            println!("{}", install_directory()?.to_string_lossy());
+            return Ok(());
+        }
+        Some("config") => {
+            println!("{}", config_directory()?.to_string_lossy());
+            return Ok(());
+        }
+        Some(kind) => {
+            return Err(Error::generic(format!(
+                "{} is not a valid value for --print",
+                kind
+            )));
+        }
+        _ => {}
     }
 
     // We create all necessary directories here so we don't have to do this
