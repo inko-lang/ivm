@@ -1,4 +1,4 @@
-use crate::config::{cache_directory, manifest_file};
+use crate::config::manifest_file;
 use crate::error::Error;
 use crate::http;
 use crate::version::Version;
@@ -43,7 +43,7 @@ impl Manifest {
     }
 
     pub fn refresh() -> Result<(), Error> {
-        let file = cache_directory()?.join("manifest.txt");
+        let file = manifest_file()?;
 
         // To reduce the amount of HTTP requests, we only update the manifest
         // if deemed necessary.

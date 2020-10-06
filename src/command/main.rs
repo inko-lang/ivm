@@ -8,7 +8,7 @@ use crate::command::run as run_cmd;
 use crate::command::uninstall;
 use crate::config::{
     bin_directory, cache_directory, config_directory, data_directory,
-    install_directory,
+    downloads_directory, install_directory,
 };
 use crate::error::Error;
 use getopts::{Options, ParsingStyle};
@@ -105,6 +105,7 @@ pub fn run() -> Result<(), Error> {
     // We create all necessary directories here so we don't have to do this
     // every time some piece of code needs these to exist.
     create_dir_all(cache_directory()?)?;
+    create_dir_all(downloads_directory()?)?;
     create_dir_all(data_directory()?)?;
     create_dir_all(install_directory()?)?;
     create_dir_all(config_directory()?)?;

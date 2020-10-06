@@ -1,4 +1,4 @@
-use crate::config::cache_directory;
+use crate::config::downloads_directory;
 use crate::error::Error;
 use getopts::Options;
 use std::fs::remove_dir_all;
@@ -23,7 +23,7 @@ pub fn run(arguments: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    let dir = cache_directory()?;
+    let dir = downloads_directory()?;
 
     info!("Removing {}", dir.to_string_lossy());
 

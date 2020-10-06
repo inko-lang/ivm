@@ -1,4 +1,4 @@
-use crate::config::{cache_directory, install_directory, INKO_EXE};
+use crate::config::{downloads_directory, install_directory, INKO_EXE};
 use crate::error::Error;
 use crate::http;
 use crate::manifest::Manifest;
@@ -71,7 +71,7 @@ pub fn run(arguments: &[String]) -> Result<(), Error> {
 
 fn extract(version: &Version) -> Result<PathBuf, Error> {
     let url = &format!("https://releases.inko-lang.org/{}.tar.gz", version);
-    let extract_to = cache_directory()?.join(version.to_string());
+    let extract_to = downloads_directory()?.join(version.to_string());
 
     if extract_to.exists() {
         return Ok(extract_to);

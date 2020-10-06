@@ -36,10 +36,14 @@ pub fn bin_directory() -> Result<PathBuf, Error> {
     data_directory().map(|d| d.join("bin"))
 }
 
+pub fn downloads_directory() -> Result<PathBuf, Error> {
+    cache_directory().map(|d| d.join("downloads"))
+}
+
 pub fn default_version_file() -> Result<PathBuf, Error> {
     config_directory().map(|d| d.join("version"))
 }
 
 pub fn manifest_file() -> Result<PathBuf, Error> {
-    cache_directory().map(|d| d.join("manifest.txt"))
+    downloads_directory().map(|d| d.join("manifest.txt"))
 }
