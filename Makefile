@@ -31,8 +31,11 @@ release/tag:
 	git tag -a -m "Release v${VERSION}" "v${VERSION}"
 	git push origin "v${VERSION}"
 
+release/publish: release/changelog release/commit release/tag
+	cargo publish
+
 ${INSTALL_BIN}:
 	mkdir -p "$$(dirname ${@})"
 	install -m755 target/release/ivm "${@}"
 
-.PHONY: release/changelog release/commit release/tag
+.PHONY: release/changelog release/commit release/tag release/publish
