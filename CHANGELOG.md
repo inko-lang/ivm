@@ -2,6 +2,10 @@
 
 ## 0.1.2 - October 07, 2020
 
+* 13ce66d: Fix --version not showing the version
+
+## 0.1.2 - October 07, 2020
+
 * 7eba80c: Move --print to a subcommand
 
 ## 0.1.1 - October 07, 2020
