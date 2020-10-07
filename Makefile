@@ -20,6 +20,9 @@ build:
 
 install: ${INSTALL_BIN}
 
+release/versions:
+	ruby scripts/update_versions.rb ${VERSION}
+
 release/changelog:
 	ruby scripts/changelog.rb "${VERSION}"
 
@@ -31,7 +34,7 @@ release/tag:
 	git tag -a -m "Release v${VERSION}" "v${VERSION}"
 	git push origin "v${VERSION}"
 
-release/publish: release/changelog release/commit release/tag
+release/publish: release/versions release/changelog release/commit release/tag
 	cargo publish
 
 ${INSTALL_BIN}:
