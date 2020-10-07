@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2 - October 07, 2020
+
+* 7eba80c: Move --print to a subcommand
+
 ## 0.1.1 - October 07, 2020
 
 * dde0598: Disable dynamic linking on Windows
