@@ -45,3 +45,11 @@ lint:rustfmt:
     - rustfmt --check src/main.rs
   except:
     - tags
+
+lint:gitlint:
+  image: registry.gitlab.com/inko-lang/development-docker-images:python
+  stage: test
+  before_script:
+    - gitlint --version
+  script:
+    - gitlint --commits "HEAD~$((GIT_DEPTH - 1))..HEAD"
