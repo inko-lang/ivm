@@ -8,7 +8,8 @@ ivm is the successor to Inko's previous version manager,
 macOS, and Windows; and doesn't need a Bash shell.
 
 For more details about ivm, how to use it, and how to install it as a user,
-refer to the [documentation](#TODO).
+refer to the
+[ivm documentation](https://docs.inko-lang.org/manual/master/getting-started/ivm/).
 
 ## Supported platforms
 
