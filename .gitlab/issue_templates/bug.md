@@ -21,4 +21,4 @@ to the essentials, as this makes it easier for maintainers to help you.
 * Rust version (see `rustc --version`): XXX
 * cargo version (see `cargo --version`): XXX
 
-/label ~type::Bug
+/label ~"type::Bug"
