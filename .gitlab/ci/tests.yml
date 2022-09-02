@@ -3,11 +3,12 @@ test:windows:
   extends:
     - .only-source-repository
   tags:
+    - shared-windows
     - windows
-    - inko
-    - vbox
+    - windows-1809
   stage: test
   before_script:
+    - ./scripts/run.ps1 choco install rust-ms --yes
     - cargo --version
     - rustc --version
   script:

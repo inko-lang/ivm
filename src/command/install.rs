@@ -119,12 +119,8 @@ fn install(source: &PathBuf, target: &PathBuf) -> Result<(), Error> {
     }
 
     let bin_dir = target.join("bin");
-    let compiler_dir = target.join("compiler");
-    let runtime_dir = target.join("runtime");
-    let compiler_bin_dir = compiler_dir.join("bin");
-    let compiler_lib_dir = compiler_dir.join("lib");
-    let compiler_bin = compiler_bin_dir.join("inkoc");
-
+    let std_dir = target.join("lib").join("inko").join("libstd");
+    let license_dir = target.join("share").join("licenses").join("inko");
     let mut command = Command::new("cargo");
 
     // We don't use the Makefile to cut down the number of dependencies, and
@@ -133,33 +129,28 @@ fn install(source: &PathBuf, target: &PathBuf) -> Result<(), Error> {
         .arg("build")
         .arg("--release")
         .env("RUSTFLAGS", "-C target-feature=+aes")
-        .env("INKO_COMPILER_BIN", &compiler_bin)
-        .env("INKO_COMPILER_LIB", &compiler_lib_dir)
-        .env("INKO_RUNTIME_LIB", &runtime_dir)
-        .current_dir(&source.join("cli"));
+        .env("INKO_LIBSTD", &std_dir)
+        .current_dir(&source);
 
     if !cfg!(windows) {
         // Dynamic linking of libffi doesn't work on MSVC, and we never got it
         // to work when using MSYS2 either. As such we only dynamically link to
         // libffi on Unix systems.
-        command.arg("--features").arg("libinko/libffi-system");
+        command.arg("--features").arg("libffi-system");
     }
 
     run_command(&mut command)?;
 
-    mkdir_p(&compiler_bin_dir)?;
-    mkdir_p(&compiler_lib_dir)?;
-    mkdir_p(&runtime_dir)?;
     mkdir_p(&bin_dir)?;
+    mkdir_p(&std_dir)?;
+    mkdir_p(&license_dir)?;
 
     cp(
         source.join("target/release").join(INKO_EXE),
         bin_dir.join(INKO_EXE),
     )?;
-    cp(source.join("compiler/bin/inkoc"), compiler_bin)?;
-    cp(source.join("LICENSE"), target.join("LICENSE"))?;
-    cp_r(source.join("compiler/lib"), compiler_lib_dir)?;
-    cp_r(source.join("runtime/src"), runtime_dir)?;
+    cp(source.join("LICENSE"), license_dir.join("LICENSE"))?;
+    cp_r(source.join("libstd").join("src"), std_dir)?;
 
     Ok(())
 }

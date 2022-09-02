@@ -1,32 +1,34 @@
 use crate::error::Error;
-use ureq::{self, Request, Response};
+use std::time::Duration;
+use ureq::{self, Agent, Error as HttpError, Response};
 
-const TIMEOUT: u64 = 10 * 1_000;
+const TIMEOUT: u64 = 10;
 
 pub fn get(url: &str) -> Result<Response, Error> {
-    let response = prepare(ureq::get(url)).call();
+    let agent = agent();
 
-    if response.ok() {
-        Ok(response)
-    } else {
-        Err(Error::generic(format!(
+    match agent.get(url).call() {
+        Ok(response) => Ok(response),
+        Err(HttpError::Status(code, response)) => Err(Error::generic(format!(
             "GET {} failed: HTTP {} {}",
             url,
-            response.status(),
+            code,
             response.status_text()
-        )))
+        ))),
+        Err(HttpError::Transport(err)) => {
+            Err(Error::generic(format!("GET {} failed: {}", url, err)))
+        }
     }
 }
 
 pub fn exists(url: &str) -> bool {
-    prepare(ureq::head(url)).call().ok()
+    agent().head(url).call().is_ok()
 }
 
-fn prepare(mut request: Request) -> Request {
-    request
-        .timeout_connect(TIMEOUT)
-        .timeout_read(TIMEOUT)
-        .set("User-Agent", &format!("ivm {}", env!("CARGO_PKG_VERSION")));
-
-    request
+fn agent() -> Agent {
+    ureq::builder()
+        .timeout_connect(Duration::from_secs(TIMEOUT))
+        .timeout_read(Duration::from_secs(TIMEOUT))
+        .user_agent(&format!("ivm {}", env!("CARGO_PKG_VERSION")))
+        .build()
 }
