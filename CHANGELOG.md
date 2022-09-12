@@ -4,6 +4,12 @@
 
 <!-- new section -->
 
+## 0.2.0 (2022-09-12)
+
+### Changed (1 change)
+
+- [Use GitLab for generating changelogs](inko-lang/ivm@074d52b2f6e2ddf9c70bbad9caeb0586551586aa)
+
 ## 0.1.3 - October 07, 2020
 
 * 13ce66d: Fix --version not showing the version
