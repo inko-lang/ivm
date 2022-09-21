@@ -3,10 +3,9 @@ use crate::error::Error;
 use crate::http;
 use crate::manifest::Manifest;
 use crate::version::Version;
-use dircpy::CopyBuilder;
 use flate2::read::GzDecoder;
 use getopts::Options;
-use std::fs::{copy, create_dir, create_dir_all, remove_dir_all};
+use std::fs::{copy, create_dir, create_dir_all, read_dir, remove_dir_all};
 use std::path::PathBuf;
 use std::process::Command;
 use tar::Archive;
@@ -177,17 +176,35 @@ fn run_command(command: &mut Command) -> Result<(), Error> {
 }
 
 fn cp_r(source: PathBuf, target: PathBuf) -> Result<(), Error> {
-    CopyBuilder::new(&source, &target)
-        .overwrite(true)
-        .run()
-        .map_err(|error| {
-            Error::generic(format!(
-                "Failed to copy {} to {}: {}",
-                source.to_string_lossy(),
-                target.to_string_lossy(),
-                error
-            ))
-        })
+    create_dir_all(&target)?;
+
+    let mut pending = vec![source.clone()];
+
+    while let Some(path) = pending.pop() {
+        let entries = read_dir(&path)?;
+
+        for entry in entries {
+            let entry = entry?;
+            let path = entry.path();
+
+            if path.is_dir() {
+                pending.push(path);
+                continue;
+            }
+
+            let rel = path.strip_prefix(&source).unwrap();
+            let target = target.join(rel);
+            let dir = target.parent().unwrap();
+
+            create_dir_all(&dir).map_err(|e| {
+                Error::generic(format!("Failed to create {:?}: {}", dir, e))
+            })?;
+
+            cp(path, target)?;
+        }
+    }
+
+    Ok(())
 }
 
 fn cp(source: PathBuf, target: PathBuf) -> Result<(), Error> {
