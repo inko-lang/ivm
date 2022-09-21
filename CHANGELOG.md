@@ -4,6 +4,12 @@
 
 <!-- new section -->
 
+## 0.3.0 (2022-09-21)
+
+### Changed (1 change)
+
+- [Remove dircpy dependency](inko-lang/ivm@cb0084435db345041a2e78a39a6fe510eb8a6221)
+
 ## 0.2.0 (2022-09-12)
 
 ### Changed (1 change)
