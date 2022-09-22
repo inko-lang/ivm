@@ -62,7 +62,7 @@ impl Manifest {
             let body = response.into_string()?;
 
             File::create(&file)
-                .and_then(|mut handle| handle.write_all(&body.as_bytes()))
+                .and_then(|mut handle| handle.write_all(body.as_bytes()))
                 .map_err(|error| {
                     Error::generic(format!(
                         "Failed to update the manifest file: {}",

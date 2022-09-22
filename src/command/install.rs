@@ -6,7 +6,7 @@ use crate::version::Version;
 use flate2::read::GzDecoder;
 use getopts::Options;
 use std::fs::{copy, create_dir, create_dir_all, read_dir, remove_dir_all};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use tar::Archive;
 
@@ -112,7 +112,7 @@ fn extract(version: &Version) -> Result<PathBuf, Error> {
     Ok(extract_to)
 }
 
-fn install(source: &PathBuf, target: &PathBuf) -> Result<(), Error> {
+fn install(source: &PathBuf, target: &Path) -> Result<(), Error> {
     if target.is_dir() {
         return Err(Error::generic("The version is already installed"));
     }
