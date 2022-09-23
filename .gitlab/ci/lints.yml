@@ -17,7 +17,7 @@ lint:clippy:
     - rustc --version
     - cargo --version
   script:
-    - cargo clippy
+    - cargo clippy -- -D warnings
   cache:
     paths:
       - .cargo
