@@ -25,7 +25,7 @@ test:macos:
   tags:
     - macos
     - inko
-    - vbox
+    - m1
   stage: test
   before_script:
     - cargo --version
