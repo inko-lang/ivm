@@ -1,58 +1,48 @@
 ---
-name: Test
+name: Tests
 on: push
-
 env:
   CARGO_HOME: ${{ github.workspace }}/.cargo
 
 jobs:
   cargo-deny:
     runs-on: ubuntu-latest
-    container:
-      image: 'ghcr.io/inko-lang/containers:alpine'
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: |
-            .cargo
-            target
-          key: ${{ runner.os }}-alpine-${{ hashFiles('**/Cargo.lock') }}
+      - uses: EmbarkStudios/cargo-deny-action@v1
 
-      - name: Running cargo-deny
-        run: cargo deny check
-
-  clippy:
+  # Clippy uses a specific version as its lints change over time, which could
+  # result in random unrelated CI failures. We'll bump this version every now
+  # and then when needed.
+  cargo-clippy:
     runs-on: ubuntu-latest
-    container:
-      image: 'ghcr.io/inko-lang/containers:rust-stable'
     steps:
       - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@1.62
+        with:
+          components: 'clippy'
       - uses: actions/cache@v3
         with:
           path: |
-            .cargo
+            ${{ github.workspace }}/.cargo
             target
-          key: ${{ runner.os }}-stable-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-alpine
+      - run: 'cargo clippy -- -D warnings'
 
-      - name: Running clippy
-        run: 'cargo clippy -- -D warnings'
-
-  rustfmt:
+  cargo-fmt:
     runs-on: ubuntu-latest
-    container:
-      image: 'ghcr.io/inko-lang/containers:rust-stable'
     steps:
       - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: 'rustfmt'
       - uses: actions/cache@v3
         with:
           path: |
-            .cargo
+            ${{ github.workspace }}/.cargo
             target
-          key: ${{ runner.os }}-stable-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Checking formatting
-        run: 'cargo fmt --all --check'
+          key: ${{ runner.os }}-alpine
+      - run: 'cargo fmt --all --check'
 
   gitlint:
     runs-on: ubuntu-latest
@@ -62,55 +52,30 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 10
+      - run: git config --global --add safe.directory $PWD
+      - run: gitlint --commits "HEAD~9..HEAD"
 
-      - name: Configuring Git
-        run: git config --global --add safe.directory $PWD
-
-      - name: Linting commits
-        run: |
-          gitlint --version
-          gitlint --commits "HEAD~9..HEAD"
-
-  test-windows:
-    name: Windows tests
-    runs-on: windows-latest
+  test:
+    strategy:
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+        version:
+          - '1.62'
+          - stable
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.version }}
       - uses: actions/cache@v3
         with:
           path: |
-            .cargo
+            ${{ github.workspace }}/.cargo
             target
-          key: ${{ runner.os }}-stable-${{ hashFiles('**/Cargo.lock') }}
-      - name: Running tests
-        run: cargo test
-
-  test-macos:
-    name: macOS tests
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: |
-            .cargo
-            target
-          key: ${{ runner.os }}-stable-${{ hashFiles('**/Cargo.lock') }}
-      - name: Running tests
-        run: cargo test
-
-  test-linux:
-    name: Linux tests
-    runs-on: ubuntu-latest
-    container:
-      image: 'ghcr.io/inko-lang/containers:rust-stable'
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: |
-            .cargo
-            target
-          key: ${{ runner.os }}-stable-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-stable
       - name: Running tests
         run: cargo test
