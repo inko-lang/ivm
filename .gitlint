@@ -17,8 +17,3 @@ line-length=72
 
 [title-must-not-contain-word]
 words=wip
-
-[ignore-by-title]
-# This ensures that commit 6f605f is ignored, which at the time of introducing
-# gitlint would cause CI failures.
-regex=^style: rubocop Lint\/ScriptPermission$

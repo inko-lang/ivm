@@ -1,0 +1,116 @@
+---
+name: Test
+on: push
+
+env:
+  CARGO_HOME: ${{ github.workspace }}/.cargo
+
+jobs:
+  cargo-deny:
+    runs-on: ubuntu-latest
+    container:
+      image: 'ghcr.io/inko-lang/containers:alpine'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            .cargo
+            target
+          key: ${{ runner.os }}-alpine-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Running cargo-deny
+        run: cargo deny check
+
+  clippy:
+    runs-on: ubuntu-latest
+    container:
+      image: 'ghcr.io/inko-lang/containers:rust-stable'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            .cargo
+            target
+          key: ${{ runner.os }}-stable-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Running clippy
+        run: 'cargo clippy -- -D warnings'
+
+  rustfmt:
+    runs-on: ubuntu-latest
+    container:
+      image: 'ghcr.io/inko-lang/containers:rust-stable'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            .cargo
+            target
+          key: ${{ runner.os }}-stable-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Checking formatting
+        run: 'cargo fmt --all --check'
+
+  gitlint:
+    runs-on: ubuntu-latest
+    container:
+      image: 'ghcr.io/inko-lang/containers:python'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 10
+
+      - name: Configuring Git
+        run: git config --global --add safe.directory $PWD
+
+      - name: Linting commits
+        run: |
+          gitlint --version
+          gitlint --commits "HEAD~9..HEAD"
+
+  test-windows:
+    name: Windows tests
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            .cargo
+            target
+          key: ${{ runner.os }}-stable-${{ hashFiles('**/Cargo.lock') }}
+      - name: Running tests
+        run: cargo test
+
+  test-macos:
+    name: macOS tests
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            .cargo
+            target
+          key: ${{ runner.os }}-stable-${{ hashFiles('**/Cargo.lock') }}
+      - name: Running tests
+        run: cargo test
+
+  test-linux:
+    name: Linux tests
+    runs-on: ubuntu-latest
+    container:
+      image: 'ghcr.io/inko-lang/containers:rust-stable'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            .cargo
+            target
+          key: ${{ runner.os }}-stable-${{ hashFiles('**/Cargo.lock') }}
+      - name: Running tests
+        run: cargo test
