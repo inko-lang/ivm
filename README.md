@@ -31,7 +31,7 @@ You can install ivm using `cargo`:
 
 Alternatively, you can build from source:
 
-    git clone git@gitlab.com:inko-lang/ivm.git
+    git clone git@github.com:inko-lang/ivm.git
     cd ivm
     cargo build --release
 
