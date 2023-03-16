@@ -8,13 +8,13 @@
 
 ### Changed (1 change)
 
-- [Remove dircpy dependency](inko-lang/ivm@cb0084435db345041a2e78a39a6fe510eb8a6221)
+* cb00844: Remove dircpy dependency
 
 ## 0.2.0 (2022-09-12)
 
 ### Changed (1 change)
 
-- [Use GitLab for generating changelogs](inko-lang/ivm@074d52b2f6e2ddf9c70bbad9caeb0586551586aa)
+- 074d52b: Use GitLab for generating changelogs
 
 ## 0.1.3 - October 07, 2020
 
