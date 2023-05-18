@@ -51,7 +51,7 @@ pub fn run(arguments: &[String]) -> Result<(), Error> {
 
     info!("Storing default version");
 
-    write(&default_version_file()?, version.to_string()).map_err(|e| {
+    write(default_version_file()?, version.to_string()).map_err(|e| {
         Error::generic(format!("Failed to set the default version: {}", e))
     })?;
 

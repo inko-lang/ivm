@@ -129,7 +129,7 @@ fn install(source: &PathBuf, target: &Path) -> Result<(), Error> {
         .arg("--release")
         .env("RUSTFLAGS", "-C target-feature=+aes")
         .env("INKO_LIBSTD", &std_dir)
-        .current_dir(&source);
+        .current_dir(source);
 
     if !cfg!(windows) {
         // Dynamic linking of libffi doesn't work on MSVC, and we never got it
@@ -196,7 +196,7 @@ fn cp_r(source: PathBuf, target: PathBuf) -> Result<(), Error> {
             let target = target.join(rel);
             let dir = target.parent().unwrap();
 
-            create_dir_all(&dir).map_err(|e| {
+            create_dir_all(dir).map_err(|e| {
                 Error::generic(format!("Failed to create {:?}: {}", dir, e))
             })?;
 
@@ -221,7 +221,7 @@ fn cp(source: PathBuf, target: PathBuf) -> Result<(), Error> {
 }
 
 fn mkdir_p(path: &PathBuf) -> Result<(), Error> {
-    create_dir_all(&path).map_err(|error| {
+    create_dir_all(path).map_err(|error| {
         Error::generic(format!(
             "Failed to create the directory {}: {}",
             path.to_string_lossy(),
