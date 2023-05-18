@@ -1,4 +1,6 @@
-use crate::config::{downloads_directory, install_directory, INKO_EXE};
+use crate::config::{
+    downloads_directory, install_directory, INKO_EXE, INKO_LIB,
+};
 use crate::error::Error;
 use crate::http;
 use crate::manifest::Manifest;
@@ -118,7 +120,8 @@ fn install(source: &PathBuf, target: &Path) -> Result<(), Error> {
     }
 
     let bin_dir = target.join("bin");
-    let std_dir = target.join("lib").join("inko").join("libstd");
+    let std_dir = target.join("lib").join("inko").join("std");
+    let runtime_dir = target.join("lib").join("inko").join("runtime");
     let license_dir = target.join("share").join("licenses").join("inko");
     let mut command = Command::new("cargo");
 
@@ -127,29 +130,27 @@ fn install(source: &PathBuf, target: &Path) -> Result<(), Error> {
     command
         .arg("build")
         .arg("--release")
-        .env("RUSTFLAGS", "-C target-feature=+aes")
-        .env("INKO_LIBSTD", &std_dir)
+        .env("INKO_STD", &std_dir)
+        .env("INKO_RT", &runtime_dir)
         .current_dir(source);
-
-    if !cfg!(windows) {
-        // Dynamic linking of libffi doesn't work on MSVC, and we never got it
-        // to work when using MSYS2 either. As such we only dynamically link to
-        // libffi on Unix systems.
-        command.arg("--features").arg("libffi-system");
-    }
 
     run_command(&mut command)?;
 
     mkdir_p(&bin_dir)?;
     mkdir_p(&std_dir)?;
+    mkdir_p(&runtime_dir)?;
     mkdir_p(&license_dir)?;
 
     cp(
         source.join("target/release").join(INKO_EXE),
         bin_dir.join(INKO_EXE),
     )?;
+    cp(
+        source.join("target/release").join(INKO_LIB),
+        runtime_dir.join(INKO_LIB),
+    )?;
     cp(source.join("LICENSE"), license_dir.join("LICENSE"))?;
-    cp_r(source.join("libstd").join("src"), std_dir)?;
+    cp_r(source.join("std").join("src"), std_dir)?;
 
     Ok(())
 }

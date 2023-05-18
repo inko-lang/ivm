@@ -5,12 +5,7 @@ use crate::error::Error;
 use crate::version::Version;
 use getopts::Options;
 use std::fs::{remove_file, write};
-
-#[cfg(unix)]
 use std::os::unix::fs::symlink;
-
-#[cfg(windows)]
-use std::os::windows::fs::symlink_file as symlink;
 
 const USAGE: &str = "ivm default [OPTIONS] [VERSION]
 
