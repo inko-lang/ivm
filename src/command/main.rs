@@ -4,9 +4,9 @@ use crate::command::implode;
 use crate::command::install;
 use crate::command::known;
 use crate::command::list;
+use crate::command::remove;
 use crate::command::run as run_cmd;
 use crate::command::show;
-use crate::command::uninstall;
 use crate::config::{
     bin_directory, cache_directory, config_directory, data_directory,
     downloads_directory, install_directory,
@@ -24,7 +24,7 @@ Inko versions.
 Commands:
 
     install      Install a new version
-    uninstall    Uninstall an existing version
+    remove       Remove an existing version
     list         List all installed versions
     known        List all available versions
     run          Run a command with a specific version
@@ -35,9 +35,9 @@ Commands:
 
 Examples:
 
-    ivm install 0.8.0      # Install version 0.8.0
-    ivm uninstall 0.8.0    # Uninstall version 0.8.0
-    ivm run 0.8.0 foo      # Run the command `foo` with version 0.8.0";
+    ivm install 0.8.0   # Install version 0.8.0
+    ivm remove 0.8.0    # Remove version 0.8.0
+    ivm run 0.8.0 foo   # Run the command `foo` with version 0.8.0";
 
 pub fn run() -> Result<(), Error> {
     let args: Vec<_> = env::args().collect();
@@ -77,7 +77,7 @@ pub fn run() -> Result<(), Error> {
 
     match matches.free.get(0).map(|s| s.as_str()) {
         Some("install") => install::run(cmd_args),
-        Some("uninstall") => uninstall::run(cmd_args),
+        Some("remove") => remove::run(cmd_args),
         Some("list") => list::run(cmd_args),
         Some("known") => known::run(cmd_args),
         Some("run") => run_cmd::run(cmd_args),

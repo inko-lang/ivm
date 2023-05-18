@@ -5,6 +5,6 @@ pub mod install;
 pub mod known;
 pub mod list;
 pub mod main;
+pub mod remove;
 pub mod run;
 pub mod show;
-pub mod uninstall;

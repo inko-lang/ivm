@@ -4,14 +4,14 @@ use crate::version::Version;
 use getopts::Options;
 use std::fs::remove_dir_all;
 
-const USAGE: &str = "ivm uninstall [OPTIONS] [VERSION]
+const USAGE: &str = "ivm remove [OPTIONS] [VERSION]
 
-Uninstalls an existing version.
+Removes an existing version.
 
 Examples:
 
-    ivm uninstall 0.8.0     # Uninstalls version 0.8.0
-    ivm uninstall latest    # Uninstalls the latest installed version";
+    ivm remove 0.8.0     # Remove version 0.8.0
+    ivm remove latest    # Remove the latest installed version";
 
 pub fn run(arguments: &[String]) -> Result<(), Error> {
     let mut options = Options::new();
@@ -30,9 +30,7 @@ pub fn run(arguments: &[String]) -> Result<(), Error> {
             .ok_or_else(|| Error::generic("No versions are installed"))?,
         Some(version) => Version::parse(version)?,
         None => {
-            return Err(Error::generic(
-                "You must specify a version to uninstall",
-            ));
+            return Err(Error::generic("You must specify a version to remove"));
         }
     };
 
