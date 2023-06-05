@@ -48,7 +48,7 @@ else
     lines.push("\n### #{label}\n")
 
     entries.each do |(sha, summary)|
-      lines.push("* #{sha}: #{summary}")
+      lines.push("* [#{sha}](https://github.com/inko-lang/ivm/commit/#{sha}): #{summary}")
     end
   end
 end

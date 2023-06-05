@@ -12,7 +12,7 @@ No changes
 
 ### Changed (1 change)
 
-* cb00844: Remove dircpy dependency
+* [cb00844](https://github.com/inko-lang/ivm/commit/cb00844): Remove dircpy dependency
 
 ## 0.2.0 (2022-09-12)
 
@@ -22,17 +22,17 @@ No changes
 
 ## 0.1.3 - October 07, 2020
 
-* 13ce66d: Fix --version not showing the version
+* [13ce66d](https://github.com/inko-lang/ivm/commit/13ce66d): Fix --version not showing the version
 
 ## 0.1.2 - October 07, 2020
 
-* 7eba80c: Move --print to a subcommand
+* [7eba80c](https://github.com/inko-lang/ivm/commit/7eba80c): Move --print to a subcommand
 
 ## 0.1.1 - October 07, 2020
 
-* dde0598: Disable dynamic linking on Windows
-* 867bf5f: Fix Cargo keywords
-* 6e7be9b: Prepare for publishing to crates.io
+* [dde0598](https://github.com/inko-lang/ivm/commit/dde0598): Disable dynamic linking on Windows
+* [867bf5f](https://github.com/inko-lang/ivm/commit/867bf5f): Fix Cargo keywords
+* [6e7be9b](https://github.com/inko-lang/ivm/commit/6e7be9b): Prepare for publishing to crates.io
 
 ## 0.1.0 - October 06, 2020
 
