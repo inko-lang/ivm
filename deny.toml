@@ -15,7 +15,6 @@ allow = [
     "Apache-2.0",
     "MPL-2.0",
     "ISC",
-    "Unicode-DFS-2016",
     "OpenSSL",
 ]
 copyleft = "deny"
