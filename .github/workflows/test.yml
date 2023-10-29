@@ -1,14 +1,22 @@
 ---
 name: Tests
-on: push
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
 env:
   CARGO_HOME: ${{ github.workspace }}/.cargo
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
+  cancel-in-progress: true
 
 jobs:
   cargo-deny:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: EmbarkStudios/cargo-deny-action@v1
 
   # Clippy uses a specific version as its lints change over time, which could
@@ -17,8 +25,8 @@ jobs:
   cargo-clippy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@1.62
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.68
         with:
           components: 'clippy'
       - uses: actions/cache@v3
@@ -32,7 +40,7 @@ jobs:
   cargo-fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: 'rustfmt'
@@ -47,7 +55,7 @@ jobs:
   gitlint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 10
       - run: pip install gitlint
@@ -62,11 +70,11 @@ jobs:
           - ubuntu-latest
           - windows-latest
         version:
-          - '1.62'
+          - '1.68'
           - stable
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.version }}
