@@ -4,6 +4,12 @@
 
 <!-- new section -->
 
+## 0.4.1 (2023-10-30)
+
+### Fixed
+
+* [5e7c288](https://github.com/inko-lang/ivm/commit/5e7c288): Install the license in the Makefile
+
 ## 0.4.0 (2023-05-19)
 
 No changes

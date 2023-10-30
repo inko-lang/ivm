@@ -1,6 +1,6 @@
 [package]
 name = "ivm"
-version = "0.4.0" # VERSION
+version = "0.4.1" # VERSION
 authors = ["Yorick Peterse <yorick@yorickpeterse.com>"]
 edition = "2021"
 license = "MPL-2.0"
