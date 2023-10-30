@@ -46,4 +46,4 @@ release/tag:
 release/publish: release/versions release/changelog release/commit release/tag
 	cargo publish
 
-.PHONY: release/changelog release/commit release/tag release/publish
+.PHONY: build release/changelog release/commit release/tag release/publish
