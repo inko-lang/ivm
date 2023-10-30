@@ -11,6 +11,7 @@ else
 endif
 
 INSTALL_BIN := ${INSTALL_PREFIX}/bin/ivm
+INSTALL_LICENSE := ${INSTALL_PREFIX}/share/licenses/ivm/LICENSE
 
 # The version of ivm, obtained from Cargo.toml.
 VERSION != cargo pkgid | cut -d\# -f2 | cut -d: -f2
@@ -18,7 +19,15 @@ VERSION != cargo pkgid | cut -d\# -f2 | cut -d: -f2
 build:
 	cargo build --release
 
-install: ${INSTALL_BIN}
+install: ${INSTALL_BIN} ${INSTALL_LICENSE}
+
+${INSTALL_BIN}:
+	mkdir -p "$$(dirname ${@})"
+	install -m755 target/release/ivm "${@}"
+
+${INSTALL_LICENSE}:
+	mkdir -p "$$(dirname ${@})"
+	install -m644 LICENSE "${@}"
 
 release/versions:
 	ruby scripts/update_versions.rb ${VERSION}
@@ -36,9 +45,5 @@ release/tag:
 
 release/publish: release/versions release/changelog release/commit release/tag
 	cargo publish
-
-${INSTALL_BIN}:
-	mkdir -p "$$(dirname ${@})"
-	install -m755 target/release/ivm "${@}"
 
 .PHONY: release/changelog release/commit release/tag release/publish
