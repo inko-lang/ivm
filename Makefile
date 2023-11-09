@@ -33,7 +33,7 @@ release/versions:
 	ruby scripts/update_versions.rb ${VERSION}
 
 release/changelog:
-	ruby scripts/changelog.rb "${VERSION}"
+	clogs "${VERSION}"
 
 release/commit:
 	git commit Cargo.toml Cargo.lock CHANGELOG.md -m "Release v${VERSION}"
