@@ -1,8 +1,11 @@
-use crate::config::install_directory;
+use crate::config::{
+    bin_directory, default_version_file, inko_data_directory,
+    install_directory, INKO_EXE,
+};
 use crate::error::Error;
 use crate::version::Version;
 use getopts::Options;
-use std::fs::remove_dir_all;
+use std::fs::{read, remove_dir_all, remove_file};
 
 const USAGE: &str = "ivm remove [OPTIONS] [VERSION]
 
@@ -42,11 +45,41 @@ pub fn run(arguments: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    remove_dir_all(&path).map_err(|error| {
-        Error::generic(format!(
-            "Failed to remove {}: {}",
-            path.to_string_lossy(),
-            error
-        ))
-    })
+    let mut paths = vec![
+        path,
+        inko_data_directory()?
+            .join("runtimes")
+            .join(version.to_string()),
+    ];
+
+    // If the version we're removing is the default version, also remove the
+    // version file and the corresponding symbolic link.
+    if let Ok(default) = default_version_file() {
+        if let Ok(data) = read(&default) {
+            if String::from_utf8_lossy(&data) == version.to_string() {
+                paths.push(default);
+                paths.push(bin_directory()?.join(INKO_EXE));
+            }
+        }
+    }
+
+    for path in paths {
+        let res = if path.is_dir() {
+            remove_dir_all(&path)
+        } else if path.is_file() || path.is_symlink() {
+            remove_file(&path)
+        } else {
+            Ok(())
+        };
+
+        if let Err(e) = res {
+            return Err(Error::generic(format!(
+                "Failed to remove {}: {}",
+                path.display(),
+                e
+            )));
+        }
+    }
+
+    Ok(())
 }

@@ -28,7 +28,7 @@ pub fn cache_directory() -> Result<PathBuf, Error> {
     })
 }
 
-pub fn data_directory() -> Result<PathBuf, Error> {
+fn base_data_directory() -> Result<PathBuf, Error> {
     let base = if cfg!(target_os = "macos") {
         home_dir().map(|h| h.join("Library").join("Application Support"))
     } else {
@@ -38,9 +38,17 @@ pub fn data_directory() -> Result<PathBuf, Error> {
             .or_else(|| home_dir().map(|h| h.join(".local").join("share")))
     };
 
-    base.map(|d| d.join(BASE_DIR)).ok_or_else(|| {
+    base.ok_or_else(|| {
         Error::generic("The local data directory couldn't be determined")
     })
+}
+
+pub fn data_directory() -> Result<PathBuf, Error> {
+    base_data_directory().map(|d| d.join(BASE_DIR))
+}
+
+pub fn inko_data_directory() -> Result<PathBuf, Error> {
+    base_data_directory().map(|d| d.join("inko"))
 }
 
 pub fn install_directory() -> Result<PathBuf, Error> {
