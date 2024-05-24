@@ -6,11 +6,13 @@ on:
   workflow_dispatch:
 
 env:
-  CARGO_HOME: ${{ github.workspace }}/.cargo
+  CARGO_HOME: ${{ github.workspace }}/.cargo-home
+  RUSTUP_HOME: ${{ github.workspace }}/.rustup-home
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   cargo-deny:
@@ -18,39 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: EmbarkStudios/cargo-deny-action@v1
-
-  # Clippy uses a specific version as its lints change over time, which could
-  # result in random unrelated CI failures. We'll bump this version every now
-  # and then when needed.
-  cargo-clippy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.68
-        with:
-          components: 'clippy'
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ${{ github.workspace }}/.cargo
-            target
-          key: ${{ runner.os }}-alpine
-      - run: 'cargo clippy -- -D warnings'
-
-  cargo-fmt:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          components: 'rustfmt'
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ${{ github.workspace }}/.cargo
-            target
-          key: ${{ runner.os }}-alpine
-      - run: 'cargo fmt --all --check'
 
   gitlint:
     runs-on: ubuntu-latest
@@ -62,27 +31,53 @@ jobs:
       - run: git config --global --add safe.directory $PWD
       - run: gitlint --commits "HEAD~9..HEAD"
 
+  cargo-clippy:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/inko-lang/ci:fedora
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.CARGO_HOME }}
+            target
+          key: fedora
+      - name: Run clippy
+        run: 'cargo clippy -- -D warnings'
+
+  cargo-fmt:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/inko-lang/ci:fedora
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.CARGO_HOME }}
+            target
+          key: fedora
+      - name: Run rustfmt
+        run: 'cargo fmt --all --check'
+
   test:
     strategy:
       matrix:
         os:
           - macos-latest
           - ubuntu-latest
-          - windows-latest
-        version:
-          - '1.68'
-          - stable
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: ${{ matrix.version }}
+          toolchain: 1.70
       - uses: actions/cache@v4
         with:
           path: |
-            ${{ github.workspace }}/.cargo
+            ${{ env.CARGO_HOME }}
             target
-          key: ${{ runner.os }}-stable
+          key: ${{ runner.os }}
       - name: Running tests
         run: cargo test
