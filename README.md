@@ -5,7 +5,7 @@ different platforms.
 
 ivm is the successor to Inko's previous version manager,
 [ienv](https://gitlab.com/inko-lang/ienv). Unlike ienv, ivm works on Linux,
-macOS, and Windows; and doesn't need a Bash shell.
+macOS, and FreeBSD.
 
 For more details about ivm, how to use it, and how to install it as a user,
 refer to the
@@ -15,7 +15,7 @@ refer to the
 
 * Linux
 * macOS
-* Windows
+* FreeBSD
 
 Since Inko requires a 64-bits platform, so does ivm.
 
