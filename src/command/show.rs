@@ -30,7 +30,7 @@ pub fn run(arguments: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    match matches.free.get(0).map(|s| s.as_str()) {
+    match matches.free.first().map(|s| s.as_str()) {
         Some("data") => {
             println!("{}", data_directory()?.to_string_lossy());
         }

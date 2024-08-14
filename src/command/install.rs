@@ -36,7 +36,7 @@ pub fn run(arguments: &[String]) -> Result<(), Error> {
     Manifest::refresh()?;
 
     let manifest = Manifest::parse()?;
-    let version = match matches.free.get(0).map(|s| s.as_str()) {
+    let version = match matches.free.first().map(|s| s.as_str()) {
         Some("latest") => manifest.latest()?,
         Some(version) => Version::parse(version)?,
         None => {

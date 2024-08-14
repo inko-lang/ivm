@@ -75,7 +75,7 @@ pub fn run() -> Result<(), Error> {
 
     let cmd_args = &matches.free[1..];
 
-    match matches.free.get(0).map(|s| s.as_str()) {
+    match matches.free.first().map(|s| s.as_str()) {
         Some("install") => install::run(cmd_args),
         Some("remove") => remove::run(cmd_args),
         Some("list") => list::run(cmd_args),

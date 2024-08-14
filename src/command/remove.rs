@@ -28,7 +28,7 @@ pub fn run(arguments: &[String]) -> Result<(), Error> {
         return Ok(());
     }
 
-    let version = match matches.free.get(0).map(|s| s.as_str()) {
+    let version = match matches.free.first().map(|s| s.as_str()) {
         Some("latest") => Version::latest_installed()
             .ok_or_else(|| Error::generic("No versions are installed"))?,
         Some(version) => Version::parse(version)?,
