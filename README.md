@@ -21,7 +21,7 @@ Since Inko requires a 64-bits platform, so does ivm.
 
 ## Requirements
 
-* Rust 1.68 or newer
+* Rust 1.78 or newer
 
 ## Installation
 
