@@ -22,7 +22,7 @@ impl Manifest {
         let file = manifest_file()?;
         let mut content = String::new();
 
-        File::open(&file)
+        File::open(file)
             .and_then(|mut handle| handle.read_to_string(&mut content))
             .map_err(|error| {
                 Error::generic(format!(
