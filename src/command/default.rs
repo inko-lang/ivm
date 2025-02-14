@@ -34,7 +34,8 @@ pub fn run(arguments: &[String]) -> Result<(), Error> {
 
     let version = Version::parse(
         matches
-            .free.first()
+            .free
+            .first()
             .map(|s| s.as_str())
             .ok_or_else(|| Error::generic("You must specify a version"))?,
     )?;
