@@ -30,7 +30,7 @@ ${INSTALL_LICENSE}:
 	install -m644 LICENSE "${@}"
 
 release/versions:
-	ruby scripts/update_versions.rb ${VERSION}
+	scripts/update_versions.sh ${VERSION}
 
 release/changelog:
 	clogs "${VERSION}"
