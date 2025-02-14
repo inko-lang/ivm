@@ -84,7 +84,7 @@ fn extract(version: &Version) -> Result<PathBuf, Error> {
         return Err(Error::generic("The version does not exist"));
     }
 
-    let response = http::get(url)?.into_reader();
+    let mut response = http::get(url)?;
 
     create_dir(&extract_to).map_err(|error| {
         Error::generic(format!(
@@ -94,7 +94,7 @@ fn extract(version: &Version) -> Result<PathBuf, Error> {
         ))
     })?;
 
-    Archive::new(GzDecoder::new(response))
+    Archive::new(GzDecoder::new(response.body_mut().as_reader()))
         .entries()
         .and_then(|entries| {
             for entry in entries {

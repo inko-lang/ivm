@@ -12,7 +12,7 @@ categories = ["command-line-utilities"]
 
 [dependencies]
 getopts = "^0.2"
-ureq = "^2.5"
+ureq = "^3.0"
 tar = "^0.4"
 flate2 = "^1.0"
 

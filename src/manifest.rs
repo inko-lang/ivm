@@ -58,8 +58,13 @@ impl Manifest {
         };
 
         if download {
-            let response = http::get(URL)?;
-            let body = response.into_string()?;
+            let mut response = http::get(URL)?;
+            let body = response.body_mut().read_to_string().map_err(|e| {
+                Error::generic(format!(
+                    "failed to read the response body: {}",
+                    e
+                ))
+            })?;
 
             File::create(&file)
                 .and_then(|mut handle| handle.write_all(body.as_bytes()))
